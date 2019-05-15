@@ -80,8 +80,8 @@ function loop() {
     //
     while (balls.length < 20) {
         let ball = new Ball(
-            random(0, width),
-            random(0, height),
+            random(0 + BALL_MAX_SIZE, width - BALL_MAX_SIZE),
+            random(0 + BALL_MAX_SIZE, height - BALL_MAX_SIZE),  //限制小球的生成位置，避免出现小球沿边缘鬼畜的问题。
             random(-BALL_MAX_VEL, BALL_MAX_VEL),
             random(-BALL_MAX_VEL, BALL_MAX_VEL),
             random(BALL_MIN_SIZE, BALL_MAX_SIZE),
