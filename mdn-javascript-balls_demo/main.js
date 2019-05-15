@@ -8,16 +8,21 @@ const height = canvas.height = window.innerHeight;
 
 // 生成随机数的函数
 function random(min,max) {
-  return Math.floor(Math.random()*(max-min)) + min;
+    return Math.floor(Math.random()*(max-min)) + min;
 }
 
 // 生成随机颜色的函数
 function randomColor() {
-  return 'rgb(' +
-         random(0, 255) + ', ' +
-         random(0, 255) + ', ' +
-         random(0, 255) + ')';
+    return 'rgb(' +
+        random(0, 255) + ', ' +
+        random(0, 255) + ', ' +
+        random(0, 255) + ')';
 }
+
+//一些默认的参数
+const BALL_MAX_VEL = 10
+const BALL_MIN_SIZE = 10
+const BALL_MAX_SIZE = 20
 
 function Ball(x, y, velX, velY, size, color) {
     this.x = x;
@@ -35,8 +40,6 @@ Ball.prototype.draw = function() {
     ctx.fill();
 }
 
-var balls = [];
-
 Ball.prototype.update = function() {
     if (this.x + this.size >= width) {
         this.velX = -(this.velX);
@@ -52,7 +55,9 @@ Ball.prototype.update = function() {
     }
     this.x += this.velX;
     this.y += this.velY;
-    //碰撞检测
+}
+
+Ball.prototype.collisionDetect = function() {   //碰撞检测
     for (let i = 0; i < balls.length; i += 1) {
         if (balls[i] === this) {
             continue;
@@ -67,6 +72,8 @@ Ball.prototype.update = function() {
     }
 }
 
+var balls = [];
+
 function loop() {
     ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
     ctx.fillRect(0, 0, width, height);
@@ -75,17 +82,18 @@ function loop() {
         let ball = new Ball(
             random(0, width),
             random(0, height),
-            random(-10, 10),
-            random(-10, 10),
-            random(10, 20),
+            random(-BALL_MAX_VEL, BALL_MAX_VEL),
+            random(-BALL_MAX_VEL, BALL_MAX_VEL),
+            random(BALL_MIN_SIZE, BALL_MAX_SIZE),
             randomColor()
         );
         balls.push(ball);
     }
     //
     for (let i = 0; i < balls.length; i += 1) {
-        balls[i].draw();
-        balls[i].update();  //两个函数执行的顺序不知道有没有什么坑。
+        balls[i].update();
+        balls[i].draw();    //我认为，没有坑。
+        balls[i].collisionDetect();
     }
     requestAnimationFrame(loop);
 }
