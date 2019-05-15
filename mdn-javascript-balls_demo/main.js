@@ -52,18 +52,31 @@ Ball.prototype.update = function() {
     }
     this.x += this.velX;
     this.y += this.velY;
+    //碰撞检测
+    for (let i = 0; i < balls.length; i += 1) {
+        if (balls[i] === this) {
+            continue;
+        }
+        let dx = balls[i].x - this.x;
+        let dy = balls[i].y - this.y;
+        let dist = dx * dx + dy * dy;
+        if (dist <= (balls[i].size + this.size) * (balls[i].size + this.size)) {
+            this.color = randomColor();
+            //balls[i].color = randomColor();   //似乎没必要
+        }
+    }
 }
 
 function loop() {
-    ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
     ctx.fillRect(0, 0, width, height);
     //
-    while (balls.length < 100) {
+    while (balls.length < 20) {
         let ball = new Ball(
             random(0, width),
             random(0, height),
-            random(-20, 20),
-            random(-20, 20),
+            random(-10, 10),
+            random(-10, 10),
             random(10, 20),
             randomColor()
         );
